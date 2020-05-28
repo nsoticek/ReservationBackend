@@ -21,8 +21,9 @@ public class UserApiController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String loginApi(@RequestBody PostRequest inputPayload) {
         ArrayList<User> users = userRepo.getUsers();
+        LoginController loginController = new LoginController();
 
-        User user = LoginController.login(inputPayload.getEmail(), inputPayload.getPassword(), users);
+        User user = loginController.login(inputPayload.getEmail(), inputPayload.getPassword(), users);
 
         if(user != null) {
             return user.getToken();

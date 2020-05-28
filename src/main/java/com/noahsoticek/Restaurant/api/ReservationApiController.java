@@ -22,9 +22,11 @@ public class ReservationApiController {
     }
 
     @GetMapping("/reservations")
-    public ArrayList<Reservation> reservation(@RequestHeader("Token") String token) {
+    public ArrayList<Reservation> reservation(@RequestHeader("Token") String jwt) {
         ArrayList<Reservation> reservations = null;
-        User user = LoginController.isTokenValid(token, userRepo);
+        LoginController loginController = new LoginController();
+
+        User user = loginController.getUser(jwt);
 
         if (user != null) {
             reservations = ReservationController.getUserReservations(user);
@@ -33,9 +35,10 @@ public class ReservationApiController {
     }
 
     @RequestMapping(value = "/addReservation", method = RequestMethod.POST)
-    public String addReservationApi(@RequestBody Reservation reservation, @RequestHeader("Token") String token) {
+    public String addReservationApi(@RequestBody Reservation reservation, @RequestHeader("Token") String jwt) {
+        LoginController loginController = new LoginController();
 
-        User user = LoginController.isTokenValid(token, userRepo);
+        User user = loginController.getUser(jwt);
 
         if (user != null) {
             ReservationController.addReservation(new Reservation(reservation.getSeats(), user.getEmail()));
@@ -46,9 +49,10 @@ public class ReservationApiController {
     }
 
     @RequestMapping(value = "/deleteReservation/{id}", method = RequestMethod.DELETE)
-    public HttpStatus deleteReservation(@PathVariable int id, @RequestHeader("Token") String token) {
+    public HttpStatus deleteReservation(@PathVariable int id, @RequestHeader("Token") String jwt) {
+        LoginController loginController = new LoginController();
 
-        User user = LoginController.isTokenValid(token, userRepo);
+        User user = loginController.getUser(jwt);
 
         if (user != null) {
             boolean isRemoved = ReservationController.deleteReservation(id);
@@ -63,9 +67,10 @@ public class ReservationApiController {
     }
 
     @RequestMapping(value = "/updateReservation/{id}", method = RequestMethod.PUT)
-    public HttpStatus updateReservation(@PathVariable int id, @RequestBody UpdateSeats updateSeats, @RequestHeader("Token") String token) {
+    public HttpStatus updateReservation(@PathVariable int id, @RequestBody UpdateSeats updateSeats, @RequestHeader("Token") String jwt) {
+        LoginController loginController = new LoginController();
 
-        User user = LoginController.isTokenValid(token, userRepo);
+        User user = loginController.getUser(jwt);
 
         if (user != null) {
             boolean isRemoved = ReservationController.updateReservation(id, updateSeats.getSeats());

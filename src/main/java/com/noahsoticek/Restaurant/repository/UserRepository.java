@@ -28,4 +28,15 @@ public class UserRepository {
         BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
         return crypt.encode(plainPassword);
     }
+
+    public User getUser(String name) {
+        User user = null;
+
+        for (int i = 0; i < users.size(); i++) {
+            if(name.equals(users.get(i).getName())){
+                user = users.get(i);
+            }
+        }
+        return user;
+    }
 }
